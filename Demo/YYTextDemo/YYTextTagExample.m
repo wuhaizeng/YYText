@@ -51,7 +51,7 @@
         UIColor *tagStrokeColor = tagStrokeColors[i];
         UIColor *tagFillColor = tagFillColors[i];
         NSMutableAttributedString *tagText = [[NSMutableAttributedString alloc] initWithString:tag];
-        [tagText yy_insertString:@"   " atIndex:0];
+        [tagText yy_insertString:@"   " atIndex:0];
         [tagText yy_appendString:@"   "];
         tagText.yy_font = font;
         tagText.yy_color = [UIColor whiteColor];
@@ -116,6 +116,11 @@
 
 - (void)textViewDidEndEditing:(YYTextView *)textView {
     self.navigationItem.rightBarButtonItem = nil;
+}
+
+- (void)textView:(YYTextView *)textView tapTagInRange:(NSRange)tapRange {
+    NSString *tapString = [textView.attributedText.string substringWithRange:tapRange];
+    NSLog(@"range --- %@, %@", NSStringFromRange(tapRange), tapString);
 }
 
 @end

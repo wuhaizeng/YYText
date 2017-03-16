@@ -1130,6 +1130,17 @@ typedef NS_ENUM(NSUInteger, YYTextMoveDirection) {
     return touchRange;
 }
 
+- (YYTextRange *)_getTapTagRangeAtPoint:(CGPoint)point {
+    point = [self _convertPointToLayout:point];
+    YYTextRange *textRange = [_innerLayout textRangeAtPoint:point];
+    textRange = [self _correctedTextRange:textRange];
+    if ([self.delegate respondsToSelector:@selector(textView:tapTagInRange:)]) {
+        NSRange range = NSMakeRange(textRange.start.offset, textRange.end.offset - textRange.start.offset);
+        [self.delegate textView:self tapTagInRange:range];
+    }
+    return textRange;
+}
+
 /// Try to get the highlight property. If exist, the range will be returnd by the range pointer.
 /// If the delegate ignore the highlight, returns nil.
 - (YYTextHighlight *)_getHighlightAtPoint:(CGPoint)point range:(NSRangePointer)range {
@@ -2636,7 +2647,9 @@ typedef NS_ENUM(NSUInteger, YYTextMoveDirection) {
     
     UITouch *touch = touches.anyObject;
     CGPoint point = [touch locationInView:_containerView];
-    
+
+    [self _getTapTagRangeAtPoint:point];
+
     _trackingTime = touch.timestamp;
     _trackingPoint = point;
     
